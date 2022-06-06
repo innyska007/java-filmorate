@@ -5,16 +5,18 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.filmpredicate.FilmPredicate;
 import ru.yandex.practicum.filmorate.model.Film;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
+@Slf4j
+@RequestMapping("/films")
 public class FilmController {
     @Autowired
     private List<FilmPredicate> filmValidators;
@@ -22,9 +24,8 @@ public class FilmController {
 
     private static int id = 1;
 
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
-    @GetMapping("/films")
+    @RequestMapping(method = RequestMethod.GET)
     public List<Film> findAll() {
         List<Film> allFilms = new ArrayList<>();
         for(Film f : films.values()) {
@@ -37,8 +38,8 @@ public class FilmController {
         films.clear();
     }
 
-    @PostMapping(value = "/films")
-    public Film create(@RequestBody Film film) {
+    @RequestMapping(method = RequestMethod.POST)
+    public Film create(@Valid @RequestBody Film film) {
         final var filmErrorValidator = filmValidators.stream()
                 .filter(validator -> !validator.test(film))
                 .findFirst();
@@ -53,8 +54,8 @@ public class FilmController {
             return film;
     }
 
-    @PutMapping(value = "/films")
-    public Film update(@RequestBody Film film) {
+    @RequestMapping(method = RequestMethod.PUT)
+    public Film update(@Valid @RequestBody Film film) {
         final var filmErrorValidator = filmValidators.stream()
                 .filter(validator -> !validator.test(film))
                 .findFirst();
