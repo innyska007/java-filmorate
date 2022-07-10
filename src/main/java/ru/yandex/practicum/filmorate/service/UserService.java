@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,15 +22,23 @@ public class UserService {
     public void addFriends(long userId, long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
-        user.addFriend(friendId);
-        friend.addFriend(userId);
+        Set<Long> userFriends = user.getFriends();
+        Set<Long> friendFriends = friend.getFriends();
+        userFriends.add(friendId);
+        friendFriends.add(userId);
+        user.setFriends(userFriends);
+        friend.setFriends(friendFriends);
     }
 
     public void deleteFriends(long userId, long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
-        user.deleteFriend(friendId);
-        friend.deleteFriend(userId);
+        Set<Long> userFriends = user.getFriends();
+        Set<Long> friendFriends = friend.getFriends();
+        userFriends.remove(friendId);
+        friendFriends.remove(userId);
+        user.setFriends(userFriends);
+        friend.setFriends(friendFriends);
     }
 
     public List<User> getUserFriends(long userId) {

@@ -25,17 +25,6 @@ public class User {
 
     private Set<Long> friends = new TreeSet<>();
 
-    public void addFriend(long id) { friends.add(id); }
-
-    public void deleteFriend(long id) {
-        friends.remove(id);
-    }
-
-    public List<Long> getFriends() {
-        List<Long> fr = List.copyOf(friends);
-        return fr;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
